@@ -24,6 +24,7 @@ featurizers.VizierStudyFeaturizer(
 ```
 """
 
+import random
 import attrs
 import gin
 from optformer.common import serialization as s_lib
@@ -34,7 +35,7 @@ from vizier import pyvizier as vz
 
 @gin.configurable
 @attrs.define(frozen=True, kw_only=True)
-class _SuggestionSerializer(s_lib.Serializer[vz.TrialSuggestion]):
+class SuggestionSerializer(s_lib.Serializer[vz.TrialSuggestion]):
   """Serialize a single trial suggestion (with metadata) using dicts."""
 
   primitive_serializer: s_lib.Serializer[s_lib.PrimitiveType] = attrs.field(
@@ -44,10 +45,16 @@ class _SuggestionSerializer(s_lib.Serializer[vz.TrialSuggestion]):
       factory=vs_lib.MetadataSerializer
   )
   include_metadata: bool = attrs.field(default=False)
+  permute_params: bool = attrs.field(default=False)
 
   def to_str(self, suggestion: vz.TrialSuggestion, /) -> str:
     param_value_dict = suggestion.parameters.as_dict()
-    for k, v in sorted(param_value_dict.items()):  # Sort by param names
+    if self.permute_params:
+      param_items = list(param_value_dict.items())
+      random.shuffle(param_items)
+      param_value_dict = dict(param_items)
+
+    for k, v in param_value_dict.items():  # Sort by param names
       v = float(v) if isinstance(v, int) else v  # Continuify ints
       param_value_dict[k] = v
 
@@ -60,7 +67,7 @@ class _SuggestionSerializer(s_lib.Serializer[vz.TrialSuggestion]):
 
 @gin.configurable
 @attrs.define(frozen=True, kw_only=True)
-class _ProblemSerializer(s_lib.Serializer[vz.ProblemStatement]):
+class ProblemSerializer(s_lib.Serializer[vz.ProblemStatement]):
   """Serializes problem."""
 
   primitive_serializer: s_lib.Serializer[s_lib.PrimitiveType] = attrs.field(
@@ -86,10 +93,10 @@ class OmniPredInputsSerializer(s_lib.Serializer[vz.ProblemAndTrials]):
   """Serializes single suggestion and study_config using raw text."""
 
   suggestion_serializer: s_lib.Serializer[vz.TrialSuggestion] = attrs.field(
-      factory=_SuggestionSerializer
+      factory=SuggestionSerializer
   )
   problem_serializer: s_lib.Serializer[vz.ProblemStatement] = attrs.field(
-      factory=_ProblemSerializer
+      factory=ProblemSerializer
   )
 
   def to_str(self, study: vz.ProblemAndTrials, /) -> str:
