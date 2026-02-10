@@ -45,7 +45,7 @@ class OmniPredSerializersTest(absltest.TestCase):
   def test_targets_serializer(self):
     serializer = serialization.OmniPredTargetsSerializer()
     out = serializer.to_str(self.study)
-    self.assertEqual(out, "<+><1><0><0><0><E-2>")
+    self.assertEqual(out, "<+><+><1><1><0><0><0>")
 
 
 if __name__ == "__main__":

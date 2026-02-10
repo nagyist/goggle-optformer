@@ -88,7 +88,7 @@ class MeasurementTokenSerializer(
   float_serializer: s_lib.CartesianProductTokenSerializer[float] = attrs.field(
       init=True,
       kw_only=True,
-      factory=numeric.DigitByDigitFloatTokenSerializer,
+      factory=numeric.IEEEFloatTokenSerializer,
   )
 
   # Created after initialization.

@@ -56,8 +56,8 @@ class MeasurementTokenSerializerTest(parameterized.TestCase):
     self.assertLen(all_tokens, 3 + len(float_all_tokens))
 
   @parameterized.parameters(
-      ("<-><4><2><3><0><E0>", -4230.0),
-      ("<-><5><0><4><0><E0>", -5040.0),
+      ("<-><+><3><4><2><3><0>", -4230.0),
+      ("<-><+><3><5><0><4><0>", -5040.0),
   )
   def test_serializer_deserializer_regular_measurement(
       self, target_str: str, deserialized_value: float

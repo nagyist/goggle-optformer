@@ -20,7 +20,7 @@ from optformer.common.serialization import numeric
 
 DEFAULT_VOCAB_PATH = 'gs://t5-data/vocabs/cc_all.32000.100extra/sentencepiece.model'  # pylint: disable=line-too-long
 
-DigitByDigitFloatTokenSerializer = numeric.DigitByDigitFloatTokenSerializer
+IEEEFloatTokenSerializer = numeric.IEEEFloatTokenSerializer
 
 
 class FloatMetricVocabulary(vocabs.HybridVocabulary[float]):
@@ -29,10 +29,10 @@ class FloatMetricVocabulary(vocabs.HybridVocabulary[float]):
   def __init__(
       self,
       sentencepiece_model_file: str,
-      deserializer: DigitByDigitFloatTokenSerializer | None = None,
+      deserializer: IEEEFloatTokenSerializer | None = None,
   ):
 
-    self._deserializer = deserializer or DigitByDigitFloatTokenSerializer()
+    self._deserializer = deserializer or numeric.IEEEFloatTokenSerializer()
 
     super().__init__(
         sentencepiece_model_file,
@@ -40,7 +40,7 @@ class FloatMetricVocabulary(vocabs.HybridVocabulary[float]):
     )
 
   @property
-  def deserializer(self) -> DigitByDigitFloatTokenSerializer:
+  def deserializer(self) -> IEEEFloatTokenSerializer:
     """To deal with pytypes."""
     return self._deserializer
 
