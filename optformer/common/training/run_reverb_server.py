@@ -21,7 +21,10 @@ from reverb.platform.default import checkpointers
 
 
 _BUFFER_SIZE = flags.DEFINE_integer(
-    'buffer_size', int(10000), 'Reverb buffer size.'
+    'buffer_size', int(100000), 'Reverb buffer size.'
+)
+_MIN_SIZE = flags.DEFINE_integer(
+    'min_size', int(1), 'Min size before sampling is allowed.'
 )
 _TABLE_NAMES = flags.DEFINE_list(
     'table_names',
@@ -50,7 +53,7 @@ def main(_):
               sampler=reverb.selectors.Uniform(),
               remover=reverb.selectors.Uniform(),
               max_size=_BUFFER_SIZE.value,
-              rate_limiter=reverb.rate_limiters.MinSize(1),
+              rate_limiter=reverb.rate_limiters.MinSize(_MIN_SIZE.value),
               max_times_sampled=1,
           )
       )
@@ -61,9 +64,10 @@ def main(_):
     else:
       raise ValueError(f'Unknown table type: {_TABLE_TYPE.value}')
 
-  checkpointer = None
   if _CHECKPOINTING.value:
     checkpointer = checkpointers.default_checkpointer()
+  else:
+    checkpointer = checkpointers.TempDirCheckpointer()
 
   server = reverb.Server(tables, port=_PORT.value, checkpointer=checkpointer)
   server.wait()
