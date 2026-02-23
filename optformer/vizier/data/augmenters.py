@@ -510,15 +510,14 @@ class StandardizeSearchSpace(VizierIdempotentAugmenter[vz.ProblemAndTrials]):
   def augment(self, study: vz.ProblemAndTrials, /) -> vz.ProblemAndTrials:
     # Create a forward converter to map to normalized feature space.
     old_search_space = study.problem.search_space
-    if old_search_space.is_conditional:
-      raise ValueError('Conditional search spaces are not supported.')
     forward_cvtr = converters.TrialToArrayConverter.from_study_config(
         vz.ProblemStatement(old_search_space)
     )
 
     # Create new search space and backward converter into this new space.
     new_search_space = vz.SearchSpace()
-    for i, pc in enumerate(old_search_space.parameters):
+    all_pcs = list(old_search_space.root.select_all().merge())
+    for i, pc in enumerate(all_pcs):
       if pc.type == vz.ParameterType.CATEGORICAL:
         if self.alpha_categories:
           feasibles = [chr(j + 97) for j in range(len(pc.feasible_values))]

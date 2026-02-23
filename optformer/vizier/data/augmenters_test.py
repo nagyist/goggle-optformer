@@ -361,6 +361,26 @@ class StandardizeSpaceAugmenterTest(absltest.TestCase):
       study = augmenter.augment(study)
       self.assertEqual(study, idempotent_study)
 
+  def test_conditional_space(self):
+    problem = vz.ProblemStatement()
+    root = problem.search_space.root
+    root.add_categorical_param('model_type', ['linear', 'dnn'])
+    dnn = root.select('model_type', ['dnn'])
+    dnn.add_float_param('learning_rate', 0.0001, 1.0)
+    linear = root.select('model_type', ['linear'])
+    linear.add_float_param('learning_rate', 0.1, 1.0)
+
+    trial1 = vz.Trial(parameters={'model_type': 'dnn', 'learning_rate': 0.01})
+    trial2 = vz.Trial(parameters={'model_type': 'linear', 'learning_rate': 0.5})
+    study = vz.ProblemAndTrials(problem=problem, trials=[trial1, trial2])
+
+    augmenter = augmenters.StandardizeSearchSpace()
+    new_study = augmenter.augment(study)
+
+    self.assertFalse(new_study.problem.search_space.is_conditional)
+    for pc in new_study.problem.search_space.parameters:
+      self.assertRegex(pc.name, r'^x\d+$')
+
 
 if __name__ == '__main__':
   absltest.main()
