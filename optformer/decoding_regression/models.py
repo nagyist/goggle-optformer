@@ -82,10 +82,10 @@ class AttentionDecoder(keras.Model):
     """Returns probabilities over the next token."""
 
     encoder_input, decoded_ids = inputs  # [B, F] and [B, L]
-    encoded = self._encoder(encoder_input)  # [B, F']
+    encoded = self._encoder(encoder_input)  # [B, F']  # pyrefly: ignore[not-callable]
 
-    encoded = self._enc_proj(encoded)  # [B, D]
-    decoded = self._token_emb(decoded_ids)  # [B, L-1, D]
+    encoded = self._enc_proj(encoded)  # [B, D]  # pyrefly: ignore[not-callable]
+    decoded = self._token_emb(decoded_ids)  # [B, L-1, D]  # pyrefly: ignore[not-callable]
 
     # Add it to the decoded sequence.
     encoded = tf.expand_dims(encoded, axis=1)  # [B, 1, D]
@@ -93,7 +93,7 @@ class AttentionDecoder(keras.Model):
 
     # Add positional embeddings to the decoded sequence
     positions = tf.range(start=0, limit=tf.shape(seq)[1], delta=1)
-    pos_embeddings = self._pos_emb(positions)
+    pos_embeddings = self._pos_emb(positions)  # pyrefly: ignore[not-callable]
     seq += pos_embeddings
 
     # Apply transformer layers.
@@ -104,7 +104,7 @@ class AttentionDecoder(keras.Model):
       seq = layernorm2(out + ffn_out)  # Update seq for the next layer
 
     # Project to logits.
-    return self._output_proj(seq)  # [B, L, V]
+    return self._output_proj(seq)  # [B, L, V]  # pyrefly: ignore[not-callable]
 
   def decode(
       self,
@@ -149,7 +149,7 @@ class AttentionDecoder(keras.Model):
       sampled_ids = vectorized_sample(probs)
       token_ids[:, i] = np.array(sampled_ids)
 
-    return np.array([self._vocab.from_int(toks) for toks in token_ids])
+    return np.array([self._vocab.from_int(toks) for toks in token_ids])  # pyrefly: ignore[bad-return]
 
 
 def weighted_sparse_categorical_crossentropy(labels, logits, weights=None):

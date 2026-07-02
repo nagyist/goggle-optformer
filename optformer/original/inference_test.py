@@ -92,7 +92,7 @@ class LogitRestrictorsTest(absltest.TestCase):
   def test_measurement_logit_restrictor(self):
     m1 = vz.MetricInformation(name="x1", goal=vz.ObjectiveMetricGoal.MAXIMIZE)
     m2 = vz.MetricInformation(name="x2", goal=vz.ObjectiveMetricGoal.MINIMIZE)
-    metrics_config = vz.MetricsConfig(metrics=[m1, m2])
+    metrics_config = vz.MetricsConfig(metrics=[m1, m2])  # pyrefly: ignore[unexpected-keyword]
 
     logit_restrictor = inference._MeasurementLogitRestrictor(
         metrics_config, vocab=self.vocab

@@ -91,7 +91,7 @@ class QuantizedVizierAlgorithm(base.Algorithm):
         ),
     )
 
-    self.__attrs_init__(
+    self.__attrs_init__(  # pyrefly: ignore[missing-attribute]
         problem=problem,
         inferencer=inferencer,
         inference_dataset_fn=inference_dataset_fn,
@@ -331,7 +331,7 @@ class VizierOptimizerAlgorithm(QuantizedVizierAlgorithm):
       return self._regressed_acquisition_function(new_batch, regress_index)
 
     best_candidates: vb.VectorizedStrategyResults = self._optimizer(
-        score_fn, prior_features=self._converter.to_features(history)
+        score_fn, prior_features=self._converter.to_features(history)  # pyrefly: ignore[bad-argument-type]
     )
     return vb.best_candidates_to_trials(best_candidates, self._converter)
 
@@ -362,7 +362,7 @@ class VizierOptimizerAlgorithm(QuantizedVizierAlgorithm):
       return self._regressed_acquisition_function(batch, regress_index)
 
     best_candidates: vb.VectorizedStrategyResults = self._optimizer(
-        score_fn, prior_features=self._converter.to_features(history)
+        score_fn, prior_features=self._converter.to_features(history)  # pyrefly: ignore[bad-argument-type]
     )
     return vb.best_candidates_to_trials(best_candidates, self._converter)
 

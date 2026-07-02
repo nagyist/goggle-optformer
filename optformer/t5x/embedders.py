@@ -162,7 +162,7 @@ class T5XTokensEmbedder(embedders.Embedder[Tokens]):
 
   @functools.partial(jax.jit, static_argnames=['self'])
   def embed(self, tokens: Tokens) -> jt.Float[jax.Array, 'B D']:
-    return self.flax_embedder.apply(self.variables, tokens)
+    return self.flax_embedder.apply(self.variables, tokens)  # pyrefly: ignore[bad-return]
 
   @property
   def dimension(self) -> int:
@@ -225,7 +225,7 @@ class T5XTextEmbedder(embedders.Embedder[str]):
     batch_size = len(texts)
 
     ds = tf.data.Dataset.from_generator(
-        lambda: [{'input': t} for t in texts],
+        lambda: [{'input': t} for t in texts],  # pyrefly: ignore[bad-argument-type]
         output_types={'input': tf.string},
         output_shapes={'input': []},
     )

@@ -97,7 +97,7 @@ class QuantizedSerializersTest(parameterized.TestCase):
     completed_trial_params = self.completed_trial.parameters.as_dict()
     for k, v in trial_params.items():
       if isinstance(v, float):  # Rounding errors from quantization.
-        self.assertAlmostEqual(v, completed_trial_params[k], delta=1e-2)
+        self.assertAlmostEqual(v, completed_trial_params[k], delta=1e-2)  # pyrefly: ignore[no-matching-overload]
       else:
         self.assertEqual(v, completed_trial_params[k])
 

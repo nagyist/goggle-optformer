@@ -33,7 +33,7 @@ class SyntheticStudyFactory(generators.SeededFactory[types.PyGloveStudy]):
   # TODO: Make these actual factory objects, not classes.
   experimenter_factories: Sequence[
       generators.SeededFactory[experimenters_lib.PyGloveExperimenter]
-  ] = attrs.field(
+  ] = attrs.field(  # pyrefly: ignore[bad-assignment]
       default=(
           experimenters.BinomialExperimenterFactory(),
           experimenters.NestedExperimenterFactory(),
@@ -51,7 +51,7 @@ class SyntheticStudyFactory(generators.SeededFactory[types.PyGloveStudy]):
     rng = random.Random(seed)
 
     exptr_factory = rng.choice(self.experimenter_factories)
-    experimenter = exptr_factory(seed)
+    experimenter = exptr_factory(seed)  # pyrefly: ignore[bad-argument-count]
 
     alg_factory_cls = rng.choice(self.algorithm_factories)
     alg_factory = alg_factory_cls()

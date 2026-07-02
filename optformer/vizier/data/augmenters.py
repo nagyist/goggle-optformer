@@ -243,7 +243,7 @@ class TrialsSubsampler(VizierAugmenter[vz.ProblemAndTrials]):
     else:
       num_trials = self.num_trials
 
-    n: int = np.random.RandomState(self.seed).choice(num_trials)
+    n: int = np.random.RandomState(self.seed).choice(num_trials)  # pyrefly: ignore[no-matching-overload]
     if n < len(study.trials):
       # TODO: For multi-objective, we should take all rank 0 trials.
       indices = np.linspace(0, len(study.trials) - 1, n).astype(np.int_)
@@ -307,7 +307,7 @@ def _has_nan(t: vz.Trial, metrics: vz.MetricsConfig) -> bool:
       for m in metrics
       if m.name in t.final_measurement_or_die.metrics
   ]
-  return np.isnan(metric_vals).any()
+  return np.isnan(metric_vals).any()  # pyrefly: ignore[bad-return]
 
 
 @attrs.define
@@ -394,7 +394,7 @@ class ObjectiveNormalizer(VizierAugmenter[vz.ProblemAndTrials]):
 
     normalized_metrics = y_converter.to_metrics(normalized_ys)
     for t, metric in zip(study.trials, normalized_metrics):
-      t.final_measurement_or_die.metrics[mc.name] = metric
+      t.final_measurement_or_die.metrics[mc.name] = metric  # pyrefly: ignore[unsupported-operation]
 
     return study
 
